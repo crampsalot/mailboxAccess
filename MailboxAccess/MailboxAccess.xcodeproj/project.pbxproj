@@ -18,6 +18,7 @@
 		4AD736A525E5937B0050C795 /* MailboxManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD736A425E5937B0050C795 /* MailboxManager.swift */; };
 		4AD736B925E605F80050C795 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4AD736B825E605F80050C795 /* README.md */; };
 		4AD736C425E617380050C795 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD736C325E617380050C795 /* User.swift */; };
+		4AD736CD25E63AEA0050C795 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD736CC25E63AE90050C795 /* DataExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		4AD736A425E5937B0050C795 /* MailboxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailboxManager.swift; sourceTree = "<group>"; };
 		4AD736B825E605F80050C795 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		4AD736C325E617380050C795 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		4AD736CC25E63AE90050C795 /* DataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 		4AD7366F25E591220050C795 /* MailboxAccess */ = {
 			isa = PBXGroup;
 			children = (
+				4AD736CB25E63A950050C795 /* Extensions */,
 				4AD736C225E6171E0050C795 /* Model */,
 				4AD736BE25E606500050C795 /* ViewControllers */,
 				4AD736BD25E6062D0050C795 /* Storyboard */,
@@ -159,6 +162,14 @@
 				4AD736C325E617380050C795 /* User.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		4AD736CB25E63A950050C795 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				4AD736CC25E63AE90050C795 /* DataExtensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -297,6 +308,7 @@
 				4AD736A525E5937B0050C795 /* MailboxManager.swift in Sources */,
 				4AD736C425E617380050C795 /* User.swift in Sources */,
 				4AD7367325E591220050C795 /* SceneDelegate.swift in Sources */,
+				4AD736CD25E63AEA0050C795 /* DataExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

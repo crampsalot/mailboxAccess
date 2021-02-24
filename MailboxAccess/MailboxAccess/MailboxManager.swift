@@ -7,25 +7,53 @@
 
 import CoreBluetooth
 
+enum MailboxState {
+    case connected
+    case disconnected
+    case authenticated
+    case authFailed
+    case locked
+    case unlocked
+}
+
+protocol MailboxDelegate {
+    func didUpdateState(mailboxManager: MailboxManager)
+}
+
 class MailboxManager: NSObject {
     private let MBOX_PERIPHERAL_NAME = "Fore"
-
-    private let LOCK_SERVICE_UUID = CBUUID(string: "9B012401-BC30-CE9A-E111-0F67E491ABDE")
+    private let MBOX_SERVICE_UUID = CBUUID(string: "9B012401-BC30-CE9A-E111-0F67E491ABDE")
     private let LOCK_CHAR_UUID: CBUUID = CBUUID(string: "4ACBCD28-7425-868E-F447-915C8F00D0CB")
+    private let MBOX_ID_CHAR_UUID: CBUUID = CBUUID(string: "4ACBCD28-7425-868E-F447-915C8F00D0CC")
+
+    private let UNLOCK_VALUE = UInt8(0)
+    private let LOCK_VALUE = UInt8(1)
+
+    private var centralMgr: CBCentralManager?
+    private var mailboxPeripheral: CBPeripheral?
+    private var user: User?
 
     static let sharedInstance = MailboxManager()
 
-    var centralMgr: CBCentralManager?
-    var mailboxPeripheral: CBPeripheral?
-    var user: User?
+    var delegate: MailboxDelegate?
+    var state: MailboxState = .disconnected
 
     private override init() {
         super.init()
     }
     
+    // MARK: - connect, disconnect, lock. unlock
     func connect(user: User) {
         self.user = user
         initBLE()
+    }
+
+    func disconnect() {
+        guard let peripheral = mailboxPeripheral else {
+            return
+        }
+
+        centralMgr?.cancelPeripheralConnection(peripheral)
     }
 
     func lock() {
@@ -37,9 +65,7 @@ class MailboxManager: NSObject {
             return
         }
 
-        let one = UInt8(1)
-        let data = Data([one])
-        peripheral.writeValue(data, for: lockChar, type: .withResponse)
+        peripheral.writeValue(getDataForLockCharacteristic(lock: true), for: lockChar, type: .withResponse)
     }
 
     func unlock() {
@@ -51,12 +77,12 @@ class MailboxManager: NSObject {
             return
         }
 
-        let zero = UInt8(0)
-        let data = Data([zero])
-        peripheral.writeValue(data, for: lockChar, type: .withResponse)
+        peripheral.writeValue(getDataForLockCharacteristic(lock: false), for: lockChar, type: .withResponse)
     }
 
-    func getLockService() -> CBService? {
+    // MARK: - Utility functions
+
+    private func getLockService() -> CBService? {
         guard let peripheral = mailboxPeripheral else {
             return nil
         }
@@ -65,12 +91,12 @@ class MailboxManager: NSObject {
             return nil
         }
 
-        let firstMatch = services.first { $0.uuid == LOCK_SERVICE_UUID }
+        let firstMatch = services.first { $0.uuid == MBOX_SERVICE_UUID }
 
         return firstMatch
     }
 
-    func getLockCharacteristic() -> CBCharacteristic? {
+    private func getLockCharacteristic() -> CBCharacteristic? {
         guard let service = getLockService() else {
             return nil
         }
@@ -85,11 +111,20 @@ class MailboxManager: NSObject {
     }
     
     private func initBLE() {
-        let bleOptions = [CBCentralManagerOptionShowPowerAlertKey: NSNumber.init(booleanLiteral: true)]
+        let bleOptions = [CBCentralManagerOptionShowPowerAlertKey: NSNumber(booleanLiteral: true)]
 
-        centralMgr = CBCentralManager.init(delegate: self, queue: nil, options: bleOptions)
+        centralMgr = CBCentralManager(delegate: self, queue: nil, options: bleOptions)
+    }
+
+    private func getDataForLockCharacteristic(lock: Bool) -> Data {
+        let value = lock ? LOCK_VALUE: UNLOCK_VALUE
+        let data = Data([value])
+
+        return data
     }
 }
+
+// MARK: - Extensions
 
 extension MailboxManager: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -134,8 +169,15 @@ extension MailboxManager: CBCentralManagerDelegate {
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        print("Connected: " + peripheral.description)
-        mailboxPeripheral?.discoverServices([LOCK_SERVICE_UUID])
+        state = .connected
+        delegate?.didUpdateState(mailboxManager: self)
+        mailboxPeripheral?.discoverServices([MBOX_SERVICE_UUID])
+    }
+
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        state = .disconnected
+        delegate?.didUpdateState(mailboxManager: self)
+        mailboxPeripheral = nil
     }
 }
 
@@ -151,24 +193,43 @@ extension MailboxManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         guard let characteristics = service.characteristics else { return }
 
-        print(service)
         for characteristic in characteristics {
-            print(" " + characteristic.description)
+            if (characteristic.uuid == MBOX_ID_CHAR_UUID) {
+                // Once the mbox id characteristic is discovered, read it's value
+                peripheral.readValue(for: characteristic)
+            }
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        if (characteristic.uuid == LOCK_CHAR_UUID) {
-            if let error = error {
-                print("Error writing to lock characteristic: " + error.localizedDescription )
-                return
-            }
+        if let error = error {
+            print("Error writing to or reading from characteristic: " + error.localizedDescription )
+            return
+        }
 
+        if (characteristic.uuid == LOCK_CHAR_UUID) {
             // Successfully locked or unlocked mailbox
+            if let val = characteristic.value {
+                let byteVal = UInt8(data: val)
+                state = (byteVal == LOCK_VALUE) ? .locked : .unlocked
+                delegate?.didUpdateState(mailboxManager: self)
+            }
+        } else if (characteristic.uuid == MBOX_SERVICE_UUID) {
+            // Compare mbox Id of peripheral with mailbox id in user object
+            // If different, disconnect
+            if let val = characteristic.value {
+                let intDataVal = Int(data: val)
+                if user?.mailboxId == intDataVal {
+                    state = .authenticated
+                    delegate?.didUpdateState(mailboxManager: self)
+                } else {
+                    state = .authFailed
+                    delegate?.didUpdateState(mailboxManager: self)
+                    disconnect()
+                }
+            } else {
+                disconnect()
+            }
         }
     }
-}
-
-class MailBoxPeripheral: CBPeripheral {
-    
 }
