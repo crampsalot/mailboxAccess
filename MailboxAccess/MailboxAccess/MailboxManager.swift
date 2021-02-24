@@ -8,7 +8,7 @@
 import CoreBluetooth
 
 class MailboxManager: NSObject {
-    private let MBOX_PERIPHERAL_NAME = "BD_MBOX"
+    private let MBOX_PERIPHERAL_NAME = "Fore"
 
     private let LOCK_SERVICE_UUID = CBUUID(string: "9B012401-BC30-CE9A-E111-0F67E491ABDE")
     private let LOCK_CHAR_UUID: CBUUID = CBUUID(string: "4ACBCD28-7425-868E-F447-915C8F00D0CB")
@@ -17,9 +17,14 @@ class MailboxManager: NSObject {
 
     var centralMgr: CBCentralManager?
     var mailboxPeripheral: CBPeripheral?
+    var user: User?
 
     private override init() {
         super.init()
+    }
+    
+    func connect(user: User) {
+        self.user = user
         initBLE()
     }
 
@@ -116,6 +121,8 @@ extension MailboxManager: CBCentralManagerDelegate {
         if !name.contains(MBOX_PERIPHERAL_NAME) {
             return
         }
+        
+        // Check advertisementData for mailbox id found in user profile
 
         print("Found device: " + peripheral.description)
 
@@ -160,4 +167,8 @@ extension MailboxManager: CBPeripheralDelegate {
             // Successfully locked or unlocked mailbox
         }
     }
+}
+
+class MailBoxPeripheral: CBPeripheral {
+    
 }

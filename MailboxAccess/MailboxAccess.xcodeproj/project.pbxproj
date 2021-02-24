@@ -16,6 +16,8 @@
 		4AD7368825E591250050C795 /* MailboxAccessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD7368725E591250050C795 /* MailboxAccessTests.swift */; };
 		4AD7369325E591250050C795 /* MailboxAccessUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD7369225E591250050C795 /* MailboxAccessUITests.swift */; };
 		4AD736A525E5937B0050C795 /* MailboxManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD736A425E5937B0050C795 /* MailboxManager.swift */; };
+		4AD736B925E605F80050C795 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4AD736B825E605F80050C795 /* README.md */; };
+		4AD736C425E617380050C795 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD736C325E617380050C795 /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,8 @@
 		4AD7369225E591250050C795 /* MailboxAccessUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailboxAccessUITests.swift; sourceTree = "<group>"; };
 		4AD7369425E591250050C795 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4AD736A425E5937B0050C795 /* MailboxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailboxManager.swift; sourceTree = "<group>"; };
+		4AD736B825E605F80050C795 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		4AD736C325E617380050C795 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +85,7 @@
 		4AD7366425E591220050C795 = {
 			isa = PBXGroup;
 			children = (
+				4AD736B825E605F80050C795 /* README.md */,
 				4AD7366F25E591220050C795 /* MailboxAccess */,
 				4AD7368625E591250050C795 /* MailboxAccessTests */,
 				4AD7369125E591250050C795 /* MailboxAccessUITests */,
@@ -101,14 +106,14 @@
 		4AD7366F25E591220050C795 /* MailboxAccess */ = {
 			isa = PBXGroup;
 			children = (
+				4AD736C225E6171E0050C795 /* Model */,
+				4AD736BE25E606500050C795 /* ViewControllers */,
+				4AD736BD25E6062D0050C795 /* Storyboard */,
+				4AD736A425E5937B0050C795 /* MailboxManager.swift */,
 				4AD7367025E591220050C795 /* AppDelegate.swift */,
 				4AD7367225E591220050C795 /* SceneDelegate.swift */,
-				4AD7367425E591220050C795 /* ViewController.swift */,
-				4AD7367625E591220050C795 /* Main.storyboard */,
 				4AD7367925E591250050C795 /* Assets.xcassets */,
-				4AD7367B25E591250050C795 /* LaunchScreen.storyboard */,
 				4AD7367E25E591250050C795 /* Info.plist */,
-				4AD736A425E5937B0050C795 /* MailboxManager.swift */,
 			);
 			path = MailboxAccess;
 			sourceTree = "<group>";
@@ -129,6 +134,31 @@
 				4AD7369425E591250050C795 /* Info.plist */,
 			);
 			path = MailboxAccessUITests;
+			sourceTree = "<group>";
+		};
+		4AD736BD25E6062D0050C795 /* Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				4AD7367625E591220050C795 /* Main.storyboard */,
+				4AD7367B25E591250050C795 /* LaunchScreen.storyboard */,
+			);
+			path = Storyboard;
+			sourceTree = "<group>";
+		};
+		4AD736BE25E606500050C795 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				4AD7367425E591220050C795 /* ViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		4AD736C225E6171E0050C795 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4AD736C325E617380050C795 /* User.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -236,6 +266,7 @@
 			files = (
 				4AD7367D25E591250050C795 /* LaunchScreen.storyboard in Resources */,
 				4AD7367A25E591250050C795 /* Assets.xcassets in Resources */,
+				4AD736B925E605F80050C795 /* README.md in Resources */,
 				4AD7367825E591220050C795 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -264,6 +295,7 @@
 				4AD7367525E591220050C795 /* ViewController.swift in Sources */,
 				4AD7367125E591220050C795 /* AppDelegate.swift in Sources */,
 				4AD736A525E5937B0050C795 /* MailboxManager.swift in Sources */,
+				4AD736C425E617380050C795 /* User.swift in Sources */,
 				4AD7367325E591220050C795 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

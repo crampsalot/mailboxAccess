@@ -9,3 +9,9 @@ You’re part of a new and exciting project. The project will allow customers to
  - Connect to a discovered Mailbox
  - Authenticate user
  - Send unlock command
+ 
+ ## Classes
+  - 
+  
+ ## Assumptions
+  - 

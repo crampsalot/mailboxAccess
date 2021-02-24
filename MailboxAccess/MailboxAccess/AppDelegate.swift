@@ -14,7 +14,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        let _ = MailboxManager.sharedInstance
+        let mailboxManager = MailboxManager.sharedInstance
+        let user = User(firstName: "Isa", lastName: "Hashim", email: "foobar@foobar.com", userId: "abcd", mailboxId: "1234")
+        mailboxManager.connect(user: user)
+        
         return true
     }
 
