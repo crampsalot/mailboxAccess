@@ -37,10 +37,10 @@ You’re part of a new and exciting project. The project will allow customers to
    1. App shows login screen and uses entered credentials to call the backend authentication API. If successful, a `User` object is returned.
    2. App calls `connect(User)`method of `MailboxManager` to connect to mailbox. The `User` object obtained earlier is passed in here.
    3. This triggers the whole chain of events:
-    - scan for BLE advertisements, look for peripheral with the target name.
-    - once the peripheral is discovered, discover it's service
-    - once the service is discovered, discover it's characteristics
-    - once the 'mbox id' characteristic is discovered, read it's value and verify that it matches the mbox id value in the `User` object. The success or failure of this check is communicated via the `didUpdateState()` method of the `MailboxDelegate`.
+      - scan for BLE advertisements, look for peripheral with the target name.
+      - once the peripheral is discovered, discover it's service
+      - once the service is discovered, discover it's characteristics
+      - once the 'mbox id' characteristic is discovered, read it's value and verify that it matches the mbox id value in the `User` object. The success or failure of this check is communicated via the `didUpdateState()` method of the `MailboxDelegate`.
    4. If it is, the app can present a UI to allow the user to lock/unlock the mailbox. This is done using the `lock()` and `unlock()` methods of `MailboxManager`.
    5. If not, `MailboxManager` will disconnect from the mailbox device/peripheral.
 
