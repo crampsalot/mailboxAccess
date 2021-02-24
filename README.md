@@ -25,12 +25,12 @@ You’re part of a new and exciting project. The project will allow customers to
    - `User`. User model object obtained as part of authentication with cloud.
    - `MailboxManager`. Singleton Manager class that manages BLE operations/tasks. Also has methods to lock/unlock the mailbox.
    - `MailboxState`. Enum for various states of MailboxManager. This is stored in the 'state' property of the `MailboxManager` object.
-    - `disconnected`. Default state; not connected to mailbox.
-    - `conntected`. Discovered and connected to mailbox.
-    - `authenticated`. The mailbox id in the user profile (in User object) matches with the mailbox id. The app can proceed to lock/unlock the mailbox.
-    - `authFailed`. The mailbox id in the user profile does NOT match with the mailbox id. The app cannot proceed to lock/unlock the mailbox.
-    - `locked`. Locking the mailbox was successful.
-    - `unlocked`. Unlocking the mailbox was successful.
+      - `disconnected`. Default state; not connected to mailbox.
+      - `conntected`. Discovered and connected to mailbox.
+      - `authenticated`. The mailbox id in the user profile (in User object) matches with the mailbox id. The app can proceed to lock/unlock the mailbox.
+      - `authFailed`. The mailbox id in the user profile does NOT match with the mailbox id. The app cannot proceed to lock/unlock the mailbox.
+      - `locked`. Locking the mailbox was successful.
+      - `unlocked`. Unlocking the mailbox was successful.
    - `MailboxDelegate`. Delegate for MailboxManager. UI components can use this to keep track of the various states of the MailboxMnager and react as needed. There is a single method that will be called - `didUpdateState()`
    
   ## Flow
