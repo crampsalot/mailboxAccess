@@ -15,3 +15,6 @@ You’re part of a new and exciting project. The project will allow customers to
   
  ## Assumptions
   - 
+  
+  ## UML Diagram
+  ![UML Diagram](images/Mailbox.png)
