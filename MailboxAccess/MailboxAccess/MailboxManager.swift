@@ -21,7 +21,7 @@ protocol MailboxDelegate {
 }
 
 class MailboxManager: NSObject {
-    private let MBOX_PERIPHERAL_NAME = "Fore"
+    private let MBOX_PERIPHERAL_NAME = "BD_MBOX"
     private let MBOX_SERVICE_UUID = CBUUID(string: "9B012401-BC30-CE9A-E111-0F67E491ABDE")
     private let LOCK_CHAR_UUID: CBUUID = CBUUID(string: "4ACBCD28-7425-868E-F447-915C8F00D0CB")
     private let MBOX_ID_CHAR_UUID: CBUUID = CBUUID(string: "4ACBCD28-7425-868E-F447-915C8F00D0CC")

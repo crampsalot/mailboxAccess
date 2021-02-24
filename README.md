@@ -18,7 +18,7 @@ You’re part of a new and exciting project. The project will allow customers to
   - The physical mailbox is BLE enabled. It is a bluetooth peripheral device that broadcasts its name in the advertisement packets which the iOS app can use to determine which devices are of interest.
   - The mailbox has a bluetooth service with 2 characteristics.
   - The 'mailbox id' characteristic contains the ID of the mailbox which should match the mailbox id also in the User object. 
-  - The 'lock' characeristic can be written to which will cause the mailbox to be locked or unlocked.
+  - The 'lock' characeristic can be written to which will cause the mailbox to be locked or unlocked. A value of 1 will lock the mailbox. A value of 0 will unlock it.
   
   ## Relevant Classes
   Only BLE related classes implemented. UI classes eg login screen, and logic for communicating with backend is not included here.
