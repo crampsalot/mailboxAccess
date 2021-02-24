@@ -204,6 +204,7 @@ extension MailboxManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if let error = error {
             print("Error writing to or reading from characteristic: " + error.localizedDescription )
+            disconnect()
             return
         }
 
