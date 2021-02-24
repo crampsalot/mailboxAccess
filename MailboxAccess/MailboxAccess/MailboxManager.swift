@@ -8,7 +8,10 @@
 import CoreBluetooth
 
 class MailboxManager: NSObject {
-    private let BRIGHTDROP_MBOX_NAME = "BD_MBOX"
+    private let MBOX_PERIPHERAL_NAME = "BD_MBOX"
+
+    private let LOCK_SERVICE_UUID = CBUUID(string: "9B012401-BC30-CE9A-E111-0F67E491ABDE")
+    private let LOCK_CHAR_UUID: CBUUID = CBUUID(string: "4ACBCD28-7425-868E-F447-915C8F00D0CB")
 
     static let sharedInstance = MailboxManager()
 
@@ -19,18 +22,66 @@ class MailboxManager: NSObject {
         super.init()
         initBLE()
     }
-    
+
     func lock() {
-        
+        guard let peripheral = mailboxPeripheral else {
+            return
+        }
+
+        guard let lockChar = getLockCharacteristic() else {
+            return
+        }
+
+        let one = UInt8(1)
+        let data = Data([one])
+        peripheral.writeValue(data, for: lockChar, type: .withResponse)
     }
-    
+
     func unlock() {
-        
+        guard let peripheral = mailboxPeripheral else {
+            return
+        }
+
+        guard let lockChar = getLockCharacteristic() else {
+            return
+        }
+
+        let zero = UInt8(0)
+        let data = Data([zero])
+        peripheral.writeValue(data, for: lockChar, type: .withResponse)
+    }
+
+    func getLockService() -> CBService? {
+        guard let peripheral = mailboxPeripheral else {
+            return nil
+        }
+
+        guard let services = peripheral.services else {
+            return nil
+        }
+
+        let firstMatch = services.first { $0.uuid == LOCK_SERVICE_UUID }
+
+        return firstMatch
+    }
+
+    func getLockCharacteristic() -> CBCharacteristic? {
+        guard let service = getLockService() else {
+            return nil
+        }
+
+        guard let characteristics = service.characteristics else {
+            return nil
+        }
+
+        let firstMatch = characteristics.first { $0.uuid == LOCK_CHAR_UUID }
+
+        return firstMatch
     }
     
     private func initBLE() {
         let bleOptions = [CBCentralManagerOptionShowPowerAlertKey: NSNumber.init(booleanLiteral: true)]
-        
+
         centralMgr = CBCentralManager.init(delegate: self, queue: nil, options: bleOptions)
     }
 }
@@ -62,7 +113,7 @@ extension MailboxManager: CBCentralManagerDelegate {
             return
         }
 
-        if !name.contains(BRIGHTDROP_MBOX_NAME) {
+        if !name.contains(MBOX_PERIPHERAL_NAME) {
             return
         }
 
@@ -77,7 +128,7 @@ extension MailboxManager: CBCentralManagerDelegate {
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         print("Connected: " + peripheral.description)
-        mailboxPeripheral?.discoverServices(nil)
+        mailboxPeripheral?.discoverServices([LOCK_SERVICE_UUID])
     }
 }
 
@@ -86,8 +137,7 @@ extension MailboxManager: CBPeripheralDelegate {
         guard let services = peripheral.services else { return }
 
         for service in services {
-//            print(service)
-            peripheral.discoverCharacteristics(nil, for: service)
+            peripheral.discoverCharacteristics([LOCK_CHAR_UUID], for: service)
         }
     }
 
@@ -97,6 +147,17 @@ extension MailboxManager: CBPeripheralDelegate {
         print(service)
         for characteristic in characteristics {
             print(" " + characteristic.description)
+        }
+    }
+
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        if (characteristic.uuid == LOCK_CHAR_UUID) {
+            if let error = error {
+                print("Error writing to lock characteristic: " + error.localizedDescription )
+                return
+            }
+
+            // Successfully locked or unlocked mailbox
         }
     }
 }
